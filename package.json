@@ -1,0 +1,30 @@
+{
+  "name": "i18n-map-resolver",
+  "version": "1.0.0",
+  "description": "resolves objects with i18n maps inside them even if deeply",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arupex/i18n-map-resolver.git"
+  },
+  "keywords": [
+    "i18n",
+    "map",
+    "resolve",
+    "deep",
+    "localize",
+    "string"
+  ],
+  "author": "dirwin517",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/arupex/i18n-map-resolver/issues"
+  },
+  "homepage": "https://github.com/arupex/i18n-map-resolver#readme",
+  "devDependencies": {
+    "assert-diff": "^1.0.1"
+  }
+}
