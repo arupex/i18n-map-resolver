@@ -4,7 +4,7 @@
   "description": "resolves objects with i18n maps inside them even if deeply",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test"
+    "test": "./node_modules/mocha/bin/mocha test"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/arupex/i18n-map-resolver#readme",
   "devDependencies": {
-    "assert-diff": "^1.0.1"
+    "assert-diff": "^1.0.1",
+    "mocha": "^2.5.3"
   }
 }

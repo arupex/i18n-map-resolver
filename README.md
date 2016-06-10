@@ -1,6 +1,8 @@
 # i18n-map-resolver
 Resolves i18n Maps inside deep objects
 
+[![npm version](https://badge.fury.io/js/i18n-map-resolver.svg)](https://badge.fury.io/js/i18n-map-resolver) [![dependencies](https://david-dm.org/arupex/i18n-map-resolver.svg)](http://github.com/arupex/i18n-map-resolver) ![Build Status](https://api.travis-ci.org/arupex/i18n-map-resolver.svg?branch=master) <a href='https://pledgie.com/campaigns/31873'><img alt='Pledge To Arupex!' src='https://pledgie.com/campaigns/31873.png?skin_name=chrome' border='0' ></a>
+
 Install:
 
     npm install i18n-map-resolver --save
