@@ -40,7 +40,7 @@ describe('performance', function(){
 
 
     it('100000 in under 175ms', function(){
-        this.timeout(225);
+        this.timeout(325);
 
         var data = generateData(100000);
 
