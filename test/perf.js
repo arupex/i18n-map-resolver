@@ -40,7 +40,7 @@ describe('performance', function(){
 
 
     it('100000 in under 175ms', function(){
-        this.timeout(175);
+        this.timeout(225);
 
         var data = generateData(100000);
 
@@ -49,7 +49,7 @@ describe('performance', function(){
     });
 
     it('perf characteristics', function(){
-        this.timeout(1000000);
+        this.timeout(1100000);
         function test(size){
             var data = generateData(size);
             var start = new Date().getTime();
