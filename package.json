@@ -1,6 +1,6 @@
 {
   "name": "i18n-map-resolver",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "resolves objects with i18n maps inside them even if deeply",
   "main": "index.js",
   "scripts": {
