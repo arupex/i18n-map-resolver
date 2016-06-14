@@ -46,7 +46,7 @@ function arupex_i18n_map_resolver(options){
             return value[fallbackLocale];
         },
         detectorMethod : options.detectorMethod || function defaultDetector(key, value){
-            return typeof value.en_US === 'string';
+            return (typeof value ==='object' && typeof value.en_US === 'string');
         },
         fallbackLocale : options.fallbackLocale || 'en_US',
         decoratorMethod : options.decoratorMethod || function defaultDecorator(object, key, value, locale, fallback){
