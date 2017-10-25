@@ -31,15 +31,17 @@
  *
  * @returns {*}
  */
+'use strict';
+
 function arupex_i18n_map_resolver(options){
     if(!options){
         options = {};
     }
 
-    var config = {
+    let config = {
         locale : options.locale || 'en_US',
         fallbackMethod : options.fallbackMethod || function defaultFallback(key, value, locale, fallbackLocale){
-            var split = locale.search(/-|_/);
+            let split = locale.search(/-|_/);
             if(split > 0 && value[locale.substr(0, split)]){
                 return value[locale.substr(0, split)];
             }
@@ -62,33 +64,33 @@ function arupex_i18n_map_resolver(options){
         if(!object){
             return;
         }
-        var report = {
+        let report = {
             fallbacks : {}
         };
 
         function resolveObject(anObject){
 
-            var state = [
+            let state = [
                 {
                     object : anObject,
                     keys : Object.keys(anObject)
                 }
             ];
-            var loops = 0;//per object
+            let loops = 0;//per object
 
             while(state.length > 0 && loops < config.maxLoops){
-                var current = state.shift();
+                let current = state.shift();
                 const currentObj = current.object;
                 const currentKeys = current.keys;
 
                 if(Array.isArray(currentKeys)){
 
                     currentKeys.forEach(function(aKey){
-                        var value = currentObj[aKey];
+                        let value = currentObj[aKey];
 
                         if(config.detectorMethod(aKey, value)){
 
-                            var localizedString = '';
+                            let localizedString = '';
                             const useLocale = locale || config.locale;
 
                             if(value[useLocale]){
