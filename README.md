@@ -47,12 +47,12 @@ Example:
      *      detectorMethod : function (key, value)
      *      fallbackLocale : string
      *      decoratorMethod : function(object, key, value, locale, fallback),
-     *      maxLoops : number (helps if object has cycle)
+     *      maxDepth : number (helps if object has cycle)
      *      report : boolean - whether to report fallbacks and such
     */
 
     var resolver = new ResolverFactory(options);
-    console.log(JSON.stringify(resolver(input), null, 3);
+    console.log(JSON.stringify(resolver.resolve(input), null, 3);
 
 Expected Output:
 

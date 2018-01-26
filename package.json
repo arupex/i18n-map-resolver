@@ -1,6 +1,6 @@
 {
   "name": "i18n-map-resolver",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "resolves objects with i18n maps inside them even if deeply",
   "main": "index.js",
   "scripts": {
@@ -27,5 +27,8 @@
   "devDependencies": {
     "assert-diff": "^1.0.1",
     "mocha": "^2.5.3"
+  },
+  "dependencies": {
+    "deep-value": "^1.0.3"
   }
 }

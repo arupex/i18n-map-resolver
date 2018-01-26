@@ -16,7 +16,8 @@ describe('performance', function(){
         return array;
     }
 
-    var resolver = require('../index')();
+    const Resolver = require('../index');
+    var resolver = new Resolver();
 
 
     it('1000 in under 10ms', function(){
@@ -24,7 +25,7 @@ describe('performance', function(){
 
         var data = generateData(1000);
 
-        resolver(data);
+        resolver.resolve(data);
 
     });
 
@@ -34,7 +35,7 @@ describe('performance', function(){
 
         var data = generateData(10000);
 
-        resolver(data);
+        resolver.resolve(data);
 
     });
 
@@ -44,7 +45,7 @@ describe('performance', function(){
 
         var data = generateData(100000);
 
-        resolver(data);
+        resolver.resolve(data);
 
     });
 
@@ -53,7 +54,7 @@ describe('performance', function(){
         function test(size){
             var data = generateData(size);
             var start = new Date().getTime();
-            resolver(data);
+            resolver.resolve(data);
             var end = new Date().getTime();
             return end-start;
         }

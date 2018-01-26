@@ -44,7 +44,7 @@ describe('i18n-map-resolver', function(){
         };
 
         var resolver = new ResolverFactory();
-        assert.deepEqual(resolver(input),{
+        assert.deepEqual(resolver.resolve(input),{
          randomField: 'random',
             label: 'English 1',
             label1: 'English 2',
@@ -68,7 +68,7 @@ describe('i18n-map-resolver', function(){
 
         var resolver = new ResolverFactory({ locale : 'nb_NO' });
 
-        assert.deepEqual(resolver(obj), {
+        assert.deepEqual(resolver.resolve(obj), {
             label : 'Nor'
         });
     });
@@ -83,7 +83,7 @@ describe('i18n-map-resolver', function(){
 
         var defaultResolver = new ResolverFactory({ locale : 'svc' });
 
-        assert.deepEqual(defaultResolver(clone(obj)), {
+        assert.deepEqual(defaultResolver.resolve(clone(obj)), {
             label : 'Eng'
         });
 
@@ -92,7 +92,7 @@ describe('i18n-map-resolver', function(){
             fallbackLocale : 'nb_NO'
         });
 
-        assert.deepEqual(nbNOResolver(clone(obj)), {
+        assert.deepEqual(nbNOResolver.resolve(clone(obj)), {
             label : 'Nor'
         });
     });
@@ -110,7 +110,7 @@ describe('i18n-map-resolver', function(){
             fallbackLocale : 'en_US'
         });
 
-        assert.deepEqual(nbNOResolver(clone(obj)), {
+        assert.deepEqual(nbNOResolver.resolve(clone(obj)), {
             label : 'Nor'
         });
     });
@@ -130,10 +130,10 @@ describe('i18n-map-resolver', function(){
         var nbNOResolver = new ResolverFactory({
             locale : 'nb_NO',
             fallbackLocale : 'en_US',
-            maxLoop : 1
+            maxDepth : 1
         });
 
-        assert.deepEqual(nbNOResolver(clone(obj)),  {
+        assert.deepEqual(nbNOResolver.resolve(clone(obj)),  {
             prop1 : '',
             prop2 : '',
             prop3 : {
@@ -157,7 +157,7 @@ describe('i18n-map-resolver', function(){
             report : true
         });
 
-        assert.deepEqual(nbNOResolver(clone(obj)),  {
+        assert.deepEqual(nbNOResolver.resolve(clone(obj)),  {
             result :{
                 fallback : 'fallback'
             },
@@ -185,7 +185,7 @@ describe('i18n-map-resolver', function(){
             }
         });
 
-        assert.deepEqual(resolver(clone(obj)),  {
+        assert.deepEqual(resolver.resolve(clone(obj)),  {
             'fallback.en_US.en_US': 'fallback'
         });
     });
@@ -204,7 +204,7 @@ describe('i18n-map-resolver', function(){
             }
         });
 
-        assert.deepEqual(resolver(clone(obj)),  {
+        assert.deepEqual(resolver.resolve(clone(obj)),  {
             fallback: 'fallback.fallback.none.en_US'
         });
     });
@@ -235,7 +235,7 @@ describe('i18n-map-resolver', function(){
             fallbackLocale : 'en_US'
         });
 
-        assert.deepEqual(nbNOResolver(input), [
+        assert.deepEqual(nbNOResolver.resolve(input), [
             {
                 label : '4'
             },
@@ -256,7 +256,75 @@ describe('i18n-map-resolver', function(){
             fallbackLocale : 'en_US'
         });
 
-        nbNOResolver(input);
-    })
+        nbNOResolver.resolve(input);
+    });
+
+    it('test it works when localized string map is the root element', function(){
+        var input = {
+            en_US: 'In Progress',
+            nb_NO: '[儲굻ßIn ProgressДß굻]'
+        };
+
+
+        var nbNOResolver = new ResolverFactory({
+            locale : 'en_US',
+            fallbackLocale : 'en_US'
+        });
+
+        assert.deepEqual(nbNOResolver.resolve(input), 'In Progress')
+
+    });
+
+
+
+    it('Array of Objects were a property informs the default locale?!', function(){
+        var input = [
+            {
+                defaultLocale : 'en_US',
+                label : {
+                    en_US : 'en_US',
+                    nb : 'nb'
+                }
+            },
+            {
+                defaultLocale : 'nb',
+                label : {
+                    en_US : 'en_US',
+                    nb : 'nb'
+                }
+            },
+            {
+                defaultLocale : 'jp',
+                label : {
+                    jp : '',
+                    nb : 'nb-when-jp-empty'
+                }
+            }
+        ];
+        var nbNOResolver = new ResolverFactory({
+            locale : {
+                propertyString : 'defaultLocale',
+                default : 'nb_NO'
+            },
+            fallbackLocale : 'en_US'
+        });
+
+        let resolved = nbNOResolver.resolve(input);
+        console.log('resolved',JSON.stringify(resolved, null,3));
+        assert.deepEqual(resolved, [
+            {//should pick out en_US
+                defaultLocale : 'en_US',
+                label : 'en_US'
+            },
+            {// should pick out nb
+                defaultLocale : 'nb',
+                label : 'nb'
+            },
+            {//doesnt have fallback or default so it uses nb
+                defaultLocale : 'jp',
+                label : 'nb-when-jp-empty'
+            }
+        ]);
+    });
 
 });
