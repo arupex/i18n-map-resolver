@@ -327,4 +327,41 @@ describe('i18n-map-resolver', function(){
         ]);
     });
 
+
+    it('when in an array of possible locales?!', function(){
+        var input = {
+                supported_locales : [
+                    {locale : 'en_US', default : false},
+                    {locale : 'nb_NO', default : false},
+                    {locale : 'jp_JP', default : true},
+                    {locale : 'it_IT', default : false}
+                ],
+                label : {
+                    en_US : 'en_US',
+                    nb : 'nb',
+                    jp_JP : 'hello world',
+                    it_IT : 'italian'
+                }
+            };
+        var nbNOResolver = new ResolverFactory({
+            locale : {
+                propertyString : 'supported_locales.@default==true.locale',
+                default : 'nb_NO'
+            },
+            fallbackLocale : 'en_US'
+        });
+
+        let resolved = nbNOResolver.resolve(input);
+        console.log('resolved',JSON.stringify(resolved, null,3));
+        assert.deepEqual(resolved, {
+            supported_locales : [
+                {locale : 'en_US', default : false},
+                {locale : 'nb_NO', default : false},
+                {locale : 'jp_JP', default : true},
+                {locale : 'it_IT', default : false}
+            ],
+            label :  'hello world'
+        });
+    });
+
 });

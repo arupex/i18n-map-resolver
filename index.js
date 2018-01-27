@@ -70,10 +70,12 @@ class ArupexI18nMapResolver {
         };
 
         const defaultFallback = (key, value, locale, fallbackLocale) => {
-            let split = locale.search(/-|_/);
-            let s = locale.substr(0, split);
-            if (split > 0 && isString(s) && isString(value[s]) && (this.returnWhenEmpty || value[s].length > 0)) {
-                return value[s];
+            if(typeof locale === 'string') {
+                let split = locale.search(/-|_/);
+                let s = locale.substr(0, split);
+                if (split > 0 && isString(s) && isString(value[s]) && (this.returnWhenEmpty || value[s].length > 0)) {
+                    return value[s];
+                }
             }
             if(typeof value[fallbackLocale] === 'string'  && (this.returnWhenEmpty || value[fallbackLocale].length > 0)) {
                 return value[fallbackLocale];
