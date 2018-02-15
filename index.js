@@ -59,7 +59,7 @@ class ArupexI18nMapResolver {
         };
         const defaultDetector = (key, value, fullObject) => {
             let defaultLocale = this.localeKey?this.deep(fullObject, this.localeKey):this.locale;
-            if(typeof value === 'object') {
+            if(value && typeof value === 'object') {
                 if(isString(value[defaultLocale]) ||
                     isString(value[this.fallbackLocale]) ||
                     isString(value.en_US) ){//may remove this hardcode in the future
