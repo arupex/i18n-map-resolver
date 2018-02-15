@@ -35,7 +35,7 @@
 
 class ArupexI18nMapResolver {
 
-    constructor(options){
+    constructor(options) {
         if (!options) {
             options = {};
         }
@@ -49,7 +49,7 @@ class ArupexI18nMapResolver {
 
         this.locale = (typeof options.locale === 'string') ? options.locale : 'en_US';
         this.localeKey = (typeof options.locale === 'object') ? options.locale.propertyString : false;
-        this.fallbackLocale  = options.fallbackLocale  || 'en_US';
+        this.fallbackLocale = options.fallbackLocale || 'en_US';
         this.returnWhenEmpty = options.returnWhenEmpty || false;
 
         const isString = (value) => typeof value === 'string';
@@ -57,37 +57,43 @@ class ArupexI18nMapResolver {
         const defaultDecorator = (object, key, value, locale, fallback) => {
             object[key] = value;
         };
-        const defaultDetector = (key, value, fullObject) => {
-            let defaultLocale = this.localeKey?this.deep(fullObject, this.localeKey):this.locale;
-            if(value && typeof value === 'object') {
-                if(isString(value[defaultLocale]) ||
+        const defaultDetector = (key, value, fullObject, overrideLocale) => {
+            let defaultLocale = overrideLocale || this.localeKey ? this.deep(fullObject, this.localeKey) : this.locale;
+            let deepLocale = this.localeKey ? this.deep(fullObject, this.localeKey) : null;
+            if (value && typeof value === 'object') {
+                if (isString(value[defaultLocale]) ||
+                    isString(value[deepLocale]) ||
                     isString(value[this.fallbackLocale]) ||
-                    isString(value.en_US) ){//may remove this hardcode in the future
+                    isString(value.en_US)) {//may remove this hardcode in the future
                     return true;
                 }
             }
             return false;
         };
 
-        const defaultFallback = (key, value, locale, fallbackLocale) => {
-            if(typeof locale === 'string') {
+        const defaultFallback = (key, value, locale, fallbackLocale, fullObject) => {
+            if (typeof locale === 'string') {
                 let split = locale.search(/-|_/);
                 let s = locale.substr(0, split);
                 if (split > 0 && isString(s) && isString(value[s]) && (this.returnWhenEmpty || value[s].length > 0)) {
                     return value[s];
                 }
             }
-            if(typeof value[fallbackLocale] === 'string'  && (this.returnWhenEmpty || value[fallbackLocale].length > 0)) {
+            let deepLocale = this.localeKey ? this.deep(fullObject, this.localeKey) : null;
+            if (deepLocale && typeof value[deepLocale] === 'string' && (this.returnWhenEmpty || value[deepLocale].length > 0)) {
+                return value[deepLocale];
+            }
+            if (typeof value[fallbackLocale] === 'string' && (this.returnWhenEmpty || value[fallbackLocale].length > 0)) {
                 return value[fallbackLocale];
             }
             let firstLocale = Object.keys(value).find((key) => {
                 return isString(key) && isString(value[key]) && (this.returnWhenEmpty || value[key].length > 0);
             });
-            return firstLocale ? value[firstLocale]: '';//cant find a good string
+            return firstLocale ? value[firstLocale] : '';//cant find a good string
         };
 
-        this.fallbackMethod  = options.fallbackMethod  || defaultFallback;
-        this.detectorMethod  = options.detectorMethod  ||  defaultDetector;
+        this.fallbackMethod = options.fallbackMethod || defaultFallback;
+        this.detectorMethod = options.detectorMethod || defaultDetector;
         this.decoratorMethod = options.decoratorMethod || defaultDecorator;
 
         this.maxDepth = options.maxDepth || 5;
@@ -95,22 +101,22 @@ class ArupexI18nMapResolver {
     }
 
 
-    resolve (object, overrideLocale) {
-        if(!object || typeof object !== 'object'){
+    resolve(object, overrideLocale) {
+        if (!object || typeof object !== 'object') {
             return;
         }
 
-        if(this.detectorMethod('', object, object)) {
+        if (this.detectorMethod('', object, object)) {
             let report = {};
-            let result = this.localize(object, overrideLocale || this.locale, '', report);
-            return this.report?{
-                result : result,
-                report : report
-            }:result;
+            let result = this.localize(object, overrideLocale || this.locale, '', report, object);
+            return this.report ? {
+                result: result,
+                report: report
+            } : result;
         }
 
 
-        if(Array.isArray(object)){
+        if (Array.isArray(object)) {
             return this.resolveArray(object, overrideLocale);
         }
 
@@ -118,30 +124,30 @@ class ArupexI18nMapResolver {
     }
 
 
-    resolveArray(array, overrideLocale){
+    resolveArray(array, overrideLocale) {
         array.forEach((element) => {
             this.resolveObject(element, overrideLocale);
         });
         return array;
     }
 
-    resolveObject(anObject, overrideLocale){
+    resolveObject(anObject, overrideLocale) {
 
         let report = {
-            fallbacks : {}
+            fallbacks: {}
         };
 
         let state = [
             {
-                object : anObject,
-                keys : Object.keys(anObject),
-                depth : 0
+                object: anObject,
+                keys: Object.keys(anObject),
+                depth: 0
             }
         ];
 
-        while(state.length > 0){
+        while (state.length > 0) {
             let current = state.shift();
-            if((current.depth < this.maxDepth)) {
+            if ((current.depth < this.maxDepth)) {
                 const currentObj = current.object;
                 const currentKeys = current.keys;
 
@@ -153,7 +159,8 @@ class ArupexI18nMapResolver {
                         if (this.detectorMethod(aKey, value, anObject)) {
 
                             const useLocale = overrideLocale || (this.localeKey ? this.deep(anObject, this.localeKey) : this.locale);
-                            let localizedString = this.localize(value, useLocale, aKey, report);
+
+                            let localizedString = this.localize(value, useLocale, aKey, report, currentObj);
 
                             this.decoratorMethod(currentObj, aKey, localizedString, useLocale, this.fallbackLocale);
                         }
@@ -173,19 +180,19 @@ class ArupexI18nMapResolver {
                 }
             }
         }
-        return this.report?{
-            result : anObject,
-            report : report
-        }:anObject;
+        return this.report ? {
+            result: anObject,
+            report: report
+        } : anObject;
     }
 
-    localize(value, useLocale, aKey, report) {
+    localize(value, useLocale, aKey, report, fullObject) {
         let localizedString = '';
         if (typeof value[useLocale] === 'string' && (this.returnWhenEmpty || value[useLocale].length > 0)) {
             localizedString = value[useLocale];
         }
         else {
-            localizedString = this.fallbackMethod(aKey, value, useLocale, this.fallbackLocale);
+            localizedString = this.fallbackMethod(aKey, value, useLocale, this.fallbackLocale, fullObject);
             if (this.report && typeof report === 'object') {
                 report.fallbacks[aKey + ':' + localizedString] = value;
             }
@@ -194,6 +201,6 @@ class ArupexI18nMapResolver {
     }
 }
 
-if(typeof module !== 'undefined'){
+if (typeof module !== 'undefined') {
     module.exports = ArupexI18nMapResolver;
 }
