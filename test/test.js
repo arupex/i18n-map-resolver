@@ -1,6 +1,9 @@
 /**
  * Created by daniel.irwin on 5/31/16.
  */
+
+'use strict';
+
 describe('i18n-map-resolver', function(){
 
     function clone(data){
